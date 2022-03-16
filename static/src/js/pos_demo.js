@@ -60,4 +60,18 @@ odoo.define('pos_demo.custom', function(require){
     Registries.Component.add(PosLastOrderButton);
     Registries.Component.add(PosDiscountButton);
     return PosDiscountButton;
+
+    const UpdatedProductScreen = ProductScreen => class extends ProductScreen {
+        _setValue(val) {
+            super._setValue(val);
+            const orderline = this.env.pos.get_order().selected_orderline;
+            if (orderline && orderline.product.standard_price){
+                var price_unit = orderline.get_unit_price()*(1.0 - (orderline.get_discount() / 100.0));
+                if (orderline.product.standard_price > price_unit) {
+                    this.showPopup('ErrorPopup', { title:'Warning', body: 'Product price set below cost of product.' });
+                }
+            }
+        }
+    };
+    Registries.Component.extend(ProductScreen,UpdatedProductScreen);
 });
