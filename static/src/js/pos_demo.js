@@ -4,6 +4,8 @@ odoo.define('pos_demo.custom', function(require){
     const PosComponent=require('point_of_sale.PosComponent');
     const ProductScreen=require('point_of_sale.ProductScreen');
     const Registries=require('point_of_sale.Registries');
+    const pos_model=require('point_of_sale.models');
+    pos_model.load_fields("product.product", ["standard_price"])
 
     class PosDiscountButton extends PosComponent{
         async onClick(){
