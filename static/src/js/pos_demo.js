@@ -23,6 +23,7 @@ odoo.define('pos_demo.custom', function(require){
         },
     });
 
+    Registries.Component.add(PosDiscountButton);
 
     class PosLastOrderButton extends PosComponent {
         async onClick() {
@@ -58,13 +59,15 @@ odoo.define('pos_demo.custom', function(require){
     });
 
     Registries.Component.add(PosLastOrderButton);
-    Registries.Component.add(PosDiscountButton);
-    return PosDiscountButton;
 
     const UpdatedProductScreen = ProductScreen => class extends ProductScreen {
         _setValue(val) {
             super._setValue(val);
             const orderline = this.env.pos.get_order().selected_orderline;
+            console.log(orderline);
+            console.log(orderline.product.standard_price);
+            console.log(orderline.get_discount);
+            console.log(price_unit);
             if (orderline && orderline.product.standard_price){
                 var price_unit = orderline.get_unit_price()*(1.0 - (orderline.get_discount() / 100.0));
                 if (orderline.product.standard_price > price_unit) {
@@ -74,4 +77,5 @@ odoo.define('pos_demo.custom', function(require){
         }
     };
     Registries.Component.extend(ProductScreen,UpdatedProductScreen);
+    return PosDiscountButton;
 });
