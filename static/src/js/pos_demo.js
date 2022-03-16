@@ -23,7 +23,29 @@ odoo.define('pos_demo.custom', function(require){
 
 
     class PosLastOrderButton extends PosComponent {
-    // Place step 2 here
+        async onClick() {
+            var self = this;
+            const order = this.env.pos.get_order();
+            if (order.attributes.client) {
+                var domain = [['partner_id', '=', order.attributes.client.id]];
+                this.rpc({
+                    model: 'pos.order', method: 'search_read',
+                    args: [domain, ['name', 'amount_total']],
+                    kwargs: { limit: 5 },
+                }).then(function (orders) {
+                    if (orders.length > 0) {
+                        var order_list = _.map(orders, function(o) {
+                            return { 'label': _.str.sprintf("%s - TOTAL: %s", o.name, o.amount_total) };
+                        });
+                        self.showPopup('SelectionPopup', { title:'Last 5 orders', list:order_list });
+                    } else {
+                        self.showPopup('ErrorPopup', { body: 'No previous orders found' });
+                    }
+                });
+            } else {
+                self.showPopup('ErrorPopup', { body: 'Please select the customer' });
+            }
+        }
     }
     PosLastOrderButton.template = 'PosLastOrderButton';
     ProductScreen.addControlButton({
