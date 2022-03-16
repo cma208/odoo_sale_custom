@@ -1,10 +1,8 @@
-console.log('Point of sale javascript loaded sale custom');
-
 odoo.define('pos_demo.custom', function(require){
     "use strict";
 
-    const PosComponet=require('point_of_sale.PosComponent');
-    const PoductScreen=require('point_of_sale.ProductScreen');
+    const PosComponent=require('point_of_sale.PosComponent');
+    const ProductScreen=require('point_of_sale.ProductScreen');
     const Registries=require('point_of_sale.Registries');
 
     class PosDiscountButton extends PosComponent{
@@ -22,6 +20,20 @@ odoo.define('pos_demo.custom', function(require){
             return true;
         },
     });
+
+
+    class PosLastOrderButton extends PosComponent {
+    // Place step 2 here
+    }
+    PosLastOrderButton.template = 'PosLastOrderButton';
+    ProductScreen.addControlButton({
+        component: PosLastOrderButton,
+        condition: function () {
+        return true;
+        },
+    });
+
+    Registries.Component.add(PosLastOrderButton);
     Registries.Component.add(PosDiscountButton);
     return PosDiscountButton;
 });
